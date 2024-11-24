@@ -5,6 +5,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class Sale : BaseEntity
     {
+        /// <summary>
+        /// Indicates the maximum quantity of identical items allowed in the sale.
+        /// </summary>
+        const int MaxQuantityIdenticalItems = 20;
 
         /// <summary>
         /// Gets the identifier of client associated with the sale
@@ -61,6 +65,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// </summary>
         public Company Company { get; private set; }
 
+        public Sale(Guid clientId, Guid companyId)
+        {
+            ClientId = clientId;
+            CompanyId = companyId;
+            Status = SaleStatus.InProgress;
+        }
 
     }
 }

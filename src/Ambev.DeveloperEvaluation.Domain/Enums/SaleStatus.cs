@@ -2,10 +2,11 @@
 
 public enum SaleStatus
 {
+
     /// <summary>
-    /// Indicates that sale is with Pending Status
+    /// Indicates that sale is in progress, that is, adding or removing products
     /// </summary>
-    Pending = 3,
+    InProgress = 3,
 
     /// <summary>
     /// Indicates that sale is with Cancelled Status
