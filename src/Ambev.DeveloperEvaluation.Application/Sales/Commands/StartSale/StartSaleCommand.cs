@@ -6,8 +6,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
 {
     public class StartSaleCommand : IRequest<StartSaleResult>
     {
-        public Guid ClientId { get; private set; }
-        public Guid Company { get; private set; }
+        public Guid ClientId { get; set; }
+        public Guid CompanyId { get; set; }
 
         public ValidationResultDetail Validate()
         {

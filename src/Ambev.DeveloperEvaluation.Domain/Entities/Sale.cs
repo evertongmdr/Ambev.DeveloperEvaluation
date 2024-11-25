@@ -65,11 +65,36 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// </summary>
         public Company Company { get; private set; }
 
-        public Sale(Guid clientId, Guid companyId)
+        public void InitiateSale()
         {
-            ClientId = clientId;
-            CompanyId = companyId;
-            Status = SaleStatus.InProgress;
+            Status = SaleStatus.Initialized;
+        }
+        
+        public void CancelSale()
+        {
+            Status = SaleStatus.Cancelled;
+        }
+
+        public void FinisheSale()
+        {
+            Status = SaleStatus.Fineshed;
+        }
+
+        public static class SaleFactory
+        {
+            public static Sale Initiate(Guid clientId, Guid companyId)
+            {
+                var sale = new Sale 
+                { 
+                    ClientId = clientId, 
+                    CompanyId = companyId, 
+                   
+                };
+
+                sale.InitiateSale();
+                
+                return sale;    
+            }
         }
 
     }

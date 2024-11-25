@@ -11,7 +11,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
                 .NotEqual(Guid.Empty)
                 .WithMessage("Invalid client ID");
 
-            RuleFor(x => x.Company)
+            RuleFor(x => x.ClientId)
                .NotEqual(Guid.Empty)
                .WithMessage("Invalid company ID");
         }

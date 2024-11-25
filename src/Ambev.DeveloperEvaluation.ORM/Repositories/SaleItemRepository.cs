@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
-    public class SaleRepository : Repository<Sale>, ISaleRepository
+    public class SaleItemRepository : Repository<SaleItem>, ISaleItemRepository
     {
-        public SaleRepository(DbContext context) : base(context)
+        public SaleItemRepository(DbContext context) : base(context)
         {
 
         }

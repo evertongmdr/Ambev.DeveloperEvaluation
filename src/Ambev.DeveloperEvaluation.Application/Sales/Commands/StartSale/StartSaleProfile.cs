@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
 {
@@ -6,7 +7,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
     {
         public StartSaleProfile()
         {
-                
+            CreateMap<Sale, StartSaleResult>();
         }
     }
 }

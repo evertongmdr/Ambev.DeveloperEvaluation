@@ -6,7 +6,7 @@ public enum SaleStatus
     /// <summary>
     /// Indicates that sale is in progress, that is, adding or removing products
     /// </summary>
-    InProgress = 3,
+    Initialized = 3,
 
     /// <summary>
     /// Indicates that sale is with Cancelled Status
