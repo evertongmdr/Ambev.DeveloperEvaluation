@@ -8,12 +8,12 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Get The Code for the Category
         /// </summary>
-        public int Code { get; private set; }
+        public int Code { get;  set; }
 
         /// <summary>
         /// Get name of the Category
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Property mapping of EF Core.
