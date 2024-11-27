@@ -6,7 +6,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItemSale
     /// Represents a request to add an item to a sale. This class contains the necessary information
     /// for identifying the sale and the product being added, as well as the quantity of the product.
     /// </summary>
-    public class AddItemSaleRequest
+    public class AddOrRemoveItemSaleRequest
     {
         /// <summary>
         /// Gets or sets the unique identifier of the sale.

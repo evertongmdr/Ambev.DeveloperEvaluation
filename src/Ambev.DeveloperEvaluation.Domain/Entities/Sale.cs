@@ -1,7 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Enums;
-using MediatR;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
@@ -42,15 +40,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// </summary>
         public SaleStatus Status { get; private set; }
 
-        /// <summary>
-        /// Gets the total value of the sale.
-        /// </summary>
-        public decimal Totalvalue { get; private set; }
-
-        /// <summary>
-        /// Gets the Discount Value of sale
-        /// </summary>
-        public decimal Discountvalue { get; private set; }
+        public decimal AmountToPay { get; private set; }
+        public decimal TotalAmount { get; private set; }
+        public decimal DiscountAmount { get; private set; }
 
         /// <summary>
         /// Gets the date and time when sale was finished.
@@ -102,16 +94,21 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             return SaleItems.FirstOrDefault(si => si.ProductId == productId);
         }
 
-        public string AddSaleItem(Guid productId, decimal price, int units)
+        public string AddOrRemoveSaleItem(Guid productId, decimal price, int units)
         {
-
             if (ExistsSaleItem(productId))
             {
                 var existingSaleItem = GetSaleItemById(productId);
                 existingSaleItem.AddUnits(units);
 
+                if(!existingSaleItem.HasUnits())
+                    _saleItems.Remove(existingSaleItem);
+                
             } else
             {
+                if (units <= 0)
+                    return "It is not possible to add a product item with zero or negative quantity.";
+
                 var newSaleItem = CreateSaleItem(productId, price, units);
                 _saleItems.Add(newSaleItem);
             }
@@ -140,7 +137,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         private void CalculateSaleValue()
         {
-            Totalvalue = SaleItems.Sum(p => p.CalculateValue());
+            TotalAmount = SaleItems.Sum(p => p.CalculateValue());
 
             CalculateTotalDiscountValue();
         }
@@ -150,16 +147,15 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
             decimal discountRate = GetDiscountRateValue();
 
-            var discount = Totalvalue * discountRate;
+            var discount = TotalAmount * discountRate;
 
-            Discountvalue = discount;
+            DiscountAmount = discount;
 
-            Totalvalue -= discount;
+            AmountToPay = TotalAmount - discount;
         }
 
         private decimal GetDiscountRateValue()
         {
-            decimal discount = 0;
 
             var saleItemsWithHighestIdenticalMinimum = SaleItems.Where(x =>
                 x.Quantity > MinQuantityIdenticalItemsDicount10Porcent).ToList();

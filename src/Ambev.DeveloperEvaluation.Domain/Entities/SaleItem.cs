@@ -39,6 +39,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             return Quantity * UnitPrice;
         }
 
+        public bool HasUnits()
+        {
+            return Quantity > 0;
+        }
+
         public void AddUnits(int units)
         {
             Quantity += units;

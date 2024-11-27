@@ -7,13 +7,13 @@ using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 {
-    public class AddItemSaleHandler : CommandHandler, IRequestHandler<AddItemSaleCommand, AddItemSaleResult?>
+    public class AddOrRemoveItemSaleHandler : CommandHandler, IRequestHandler<AddOrRemoveItemSaleCommand, AddOrRemoveItemSaleResult?>
     {
         private readonly IProductRepository _productRepository;
         private readonly ISaleRepository _saleRepository;
         private readonly IMapper _mapper;
 
-        public AddItemSaleHandler(DomainValidationContext domainValidationContext,IProductRepository productRepository, 
+        public AddOrRemoveItemSaleHandler(DomainValidationContext domainValidationContext,IProductRepository productRepository, 
             ISaleRepository saleRepository, IMapper mapper) : base(domainValidationContext)
         {
             _productRepository = productRepository;
@@ -21,7 +21,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
             _mapper = mapper;
         }
 
-        public async Task<AddItemSaleResult?> Handle(AddItemSaleCommand command, CancellationToken cancellationToken)
+        public async Task<AddOrRemoveItemSaleResult?> Handle(AddOrRemoveItemSaleCommand command, CancellationToken cancellationToken)
         {
             if (!ValidCommand(command)) return null;
 
@@ -29,7 +29,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (!validationSuccess) return null;
 
-           var existsMessageError =  sale.AddSaleItem(product.Id, product.Price, command.QuantityProduct);
+           var existsMessageError =  sale.AddOrRemoveSaleItem(product.Id, product.Price, command.QuantityProduct);
 
             if (!string.IsNullOrEmpty(existsMessageError))
             {
@@ -37,20 +37,20 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
                 return null;
             }
 
-            var result = _mapper.Map<AddItemSaleResult>(sale);
+            var result = _mapper.Map<AddOrRemoveItemSaleResult>(sale);
 
             await _saleRepository.UpdateAsync(sale);
 
             return result;
         }
 
-        private async Task<(bool sucess, Sale,Product)> ValidateSaleAndProductExistenceAsync(AddItemSaleCommand command)
+        private async Task<(bool sucess, Sale,Product)> ValidateSaleAndProductExistenceAsync(AddOrRemoveItemSaleCommand command)
         {
             var existsSale = await _saleRepository.GetWithSaleItemsByIdAsync(command.SaleId);
 
             if (existsSale == null)
             {
-                _domainValidationContext.AddValidationError("Add Item Sale", "he Sale was not found");
+                _domainValidationContext.AddValidationError("Add Item Sale", "He ale was not found");
                 return (false, null, null);
             }
 

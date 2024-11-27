@@ -50,7 +50,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
         [HttpPost("items")]
         [ProducesResponseType(typeof(ApiResponseWithData<StartSaleResponse>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddItemSale([FromBody] AddItemSaleRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddOrRemoveItemSale([FromBody] AddOrRemoveItemSaleRequest request, CancellationToken cancellationToken)
         {
             var validator = new AddItemSaleRequestValidator();
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
@@ -58,17 +58,17 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             if (!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
-            var command = _mapper.Map<AddItemSaleCommand>(request);
+            var command = _mapper.Map<AddOrRemoveItemSaleCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
 
             if (!OperationValid())
                 return ErrorResponse();
 
-            return Created(string.Empty, new ApiResponseWithData<AddItemSaleResponse>
+            return Created(string.Empty, new ApiResponseWithData<AddOrRemoveItemSaleResponse>
             {
                 Success = true,
                 Message = "Item sale add successfully",
-                Data = _mapper.Map<AddItemSaleResponse>(response)
+                Data = _mapper.Map<AddOrRemoveItemSaleResponse>(response)
             });
         }
     }

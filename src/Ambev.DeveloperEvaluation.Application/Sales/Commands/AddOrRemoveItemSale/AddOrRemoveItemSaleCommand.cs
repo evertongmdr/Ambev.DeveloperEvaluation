@@ -6,7 +6,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
     /// <summary>
     /// Represents the command to add an item to a sale.
     /// </summary>
-    public class AddItemSaleCommand : Command<AddItemSaleResult?>
+    public class AddOrRemoveItemSaleCommand : Command<AddOrRemoveItemSaleResult?>
     {
         /// <summary>
         /// Unique identifier of the sale.
@@ -26,7 +26,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
         public override bool IsValid()
         {
-            var validationResult = new AddItemSaleCommandValidator().Validate(this);
+            var validationResult = new AddOrRemoveItemSaleCommandValidator().Validate(this);
             return validationResult.IsValid;
         }
 

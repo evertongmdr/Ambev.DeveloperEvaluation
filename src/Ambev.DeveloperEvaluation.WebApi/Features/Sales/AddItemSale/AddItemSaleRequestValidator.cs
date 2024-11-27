@@ -2,7 +2,7 @@
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItemSale
 {
-    public class AddItemSaleRequestValidator: AbstractValidator<AddItemSaleRequest>
+    public class AddItemSaleRequestValidator: AbstractValidator<AddOrRemoveItemSaleRequest>
     {
 
         public AddItemSaleRequestValidator()
