@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory;
 using Ambev.DeveloperEvaluation.Application.Categorys.DeleteCategory;
 using Ambev.DeveloperEvaluation.Application.Categorys.GetCategory;
+using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categorys.CreateCategory;
 using Ambev.DeveloperEvaluation.WebApi.Features.Categorys.DeleteCategory;
@@ -13,12 +14,12 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categorys
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CategorysController : ControllerBase
+    public class CategorysController : BaseController
     {
-
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
-        public CategorysController(IMediator mediator, IMapper mapper)
+        public CategorysController(DomainValidationContext domainValidationContext,
+            IMediator mediator, IMapper mapper) : base (domainValidationContext)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -37,6 +38,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categorys
 
             var command = _mapper.Map<CreateCategoryCommand>(request);
             var response = await _mediator.Send(command, cancellationToken);
+
+            if (!OperationValid())
+                return ErrorResponse();
 
             return Created(string.Empty, new ApiResponseWithData<CreateCategoryResponse>
             {
@@ -61,6 +65,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Categorys
 
             var command = _mapper.Map<GetCategoryCommand>(request.Id);
             var response = await _mediator.Send(command, cancellationToken);
+
+            if (!OperationValid())
+                return ErrorResponse();
 
             return Ok(new ApiResponseWithData<GetCategoryResponse>
             {

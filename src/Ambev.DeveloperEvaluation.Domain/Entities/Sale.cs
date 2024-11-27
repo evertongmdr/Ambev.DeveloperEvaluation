@@ -80,6 +80,31 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             Status = SaleStatus.Fineshed;
         }
 
+        public SaleItem? ExistsSaleItem(Guid productId)
+        {
+            return SaleItems.FirstOrDefault(si => si.ProductId == productId);
+        }
+
+        public void AddSaleItem(SaleItem saleItem)
+        {
+            _saleItems.Add(saleItem);
+            CalculateOrderValue();
+
+        }
+
+        public void CalculateOrderValue()
+        {
+            Totalvalue = SaleItems.Sum(p => p.CalculateValue());
+
+            CalculateTotalDiscountValue();
+        }
+
+
+        public void CalculateTotalDiscountValue()
+        {
+
+        }
+
         public static class SaleFactory
         {
             public static Sale Initiate(Guid clientId, Guid companyId)
@@ -97,5 +122,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             }
         }
 
+        
     }
 }

@@ -1,36 +1,40 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
+using System.Net;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 {
-    public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, CreateCategoryResult>
+    public class CreateCategoryHandler : CommandHandler, IRequestHandler<CreateCategoryCommand, CreateCategoryResult?>
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CreateCategoryHandler(ICategoryRepository categoryRepository, IMapper mapper)
+        public CreateCategoryHandler(DomainValidationContext domainNotificationContext,
+            ICategoryRepository categoryRepository, IMapper mapper) : base(domainNotificationContext)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
 
         }
 
-        public async Task<CreateCategoryResult> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<CreateCategoryResult?> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
-            var validator = new CreateCategoryCommandValidator();
 
-            var validationResult = validator.Validate(command);
-
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
-
+            if (!ValidCommand(command)) return null;
+            
             var existsCategory = await _categoryRepository.GetByCodeAsync(command.Code);
 
             if (existsCategory != null)
-                throw new InvalidOperationException($"This code {command.Code} is already associated with a category.");
+            {
+                _domainValidationContext.AddValidationError("Create Category", $"This code {command.Code} is " +
+                    $"already associated with a category.");
+
+                return null;
+            }
 
             var category = _mapper.Map<Category>(command);
 
@@ -40,4 +44,6 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
             return result;
         }
     }
+
+
 }

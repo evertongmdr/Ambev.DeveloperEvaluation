@@ -2,9 +2,9 @@
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
 {
-    public  class GetCategoryValidator : AbstractValidator<GetCategoryCommand>
+    public  class GetCategoryCommandValidator : AbstractValidator<GetCategoryCommand>
     {
-        public GetCategoryValidator()
+        public GetCategoryCommandValidator()
         {
             RuleFor(x => x.Id)
             .NotEmpty()

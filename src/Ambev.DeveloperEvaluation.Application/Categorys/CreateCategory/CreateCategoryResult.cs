@@ -3,5 +3,6 @@
     public class CreateCategoryResult
     {
         public Guid Id { get; set; }
+
     }
 }

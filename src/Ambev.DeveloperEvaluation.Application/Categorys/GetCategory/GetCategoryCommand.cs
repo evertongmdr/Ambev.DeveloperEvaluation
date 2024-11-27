@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
 {
-    public class GetCategoryCommand : IRequest<GetCategoryResult>
+    public class GetCategoryCommand : Command<GetCategoryResult?>
     {
         public Guid Id { get; set; }
 
@@ -10,5 +10,12 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
         {
             Id = id;
         }
+
+        public override bool IsValid()
+        {
+            ValidationResult = new GetCategoryCommandValidator().Validate(this);
+            return ValidationResult.IsValid;
+        }
+
     }
 }

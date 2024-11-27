@@ -1,11 +1,9 @@
-﻿using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
+﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
 using Ambev.DeveloperEvaluation.Common.Validation;
-using FluentValidation;
-using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 {
-    public class CreateCategoryCommand : IRequest<CreateCategoryResult>
+    public class CreateCategoryCommand : Command<CreateCategoryResult>
     {
         /// <summary>
         /// Get The Code for the Category
@@ -17,15 +15,10 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
         /// </summary>
         public string Name { get; set; }
 
-        public ValidationResultDetail Validate()
+        public override bool IsValid()
         {
-            var validator = new CreateCategoryCommandValidator();
-            var result = validator.Validate(this);
-            return new ValidationResultDetail
-            {
-                IsValid = result.IsValid,
-                Errors = result.Errors.Select(o => (ValidationErrorDetail)o)
-            };
+            ValidationResult = new CreateCategoryCommandValidator().Validate(this);
+            return ValidationResult.IsValid;
         }
     }
 

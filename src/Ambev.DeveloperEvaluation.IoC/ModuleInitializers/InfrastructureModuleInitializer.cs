@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory;
+using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.ORM.Repositories;
@@ -22,6 +23,7 @@ public class InfrastructureModuleInitializer : IModuleInitializer
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ISaleRepository, SaleRepository>();
         builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
+        builder.Services.AddScoped<DomainValidationContext>();
 
     }
 }
