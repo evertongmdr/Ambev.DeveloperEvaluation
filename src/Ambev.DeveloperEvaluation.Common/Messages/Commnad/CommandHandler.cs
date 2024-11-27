@@ -2,7 +2,6 @@
 
 namespace Ambev.DeveloperEvaluation.Common.Messages.Commnad
 {
-    //documentar
     public abstract class CommandHandler
     {
         protected readonly DomainValidationContext _domainValidationContext;

@@ -1,76 +1,69 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 {
-    public class AddItemSaleHandler : IRequestHandler<AddItemSaleCommand, AddItemSaleResult>
+    public class AddItemSaleHandler : CommandHandler, IRequestHandler<AddItemSaleCommand, AddItemSaleResult?>
     {
         private readonly IProductRepository _productRepository;
         private readonly ISaleRepository _saleRepository;
-        private readonly ISaleItemRepository _saleItemRepository;
         private readonly IMapper _mapper;
 
-        public AddItemSaleHandler(IProductRepository productRepository, ISaleRepository saleRepository, 
-            ISaleItemRepository saleItemRepository, IMapper mapper)
+        public AddItemSaleHandler(DomainValidationContext domainValidationContext,IProductRepository productRepository, 
+            ISaleRepository saleRepository, IMapper mapper) : base(domainValidationContext)
         {
             _productRepository = productRepository;
             _saleRepository = saleRepository;
-            _saleItemRepository = saleItemRepository;
             _mapper = mapper;
         }
 
-        public async Task<AddItemSaleResult> Handle(AddItemSaleCommand command, CancellationToken cancellationToken)
+        public async Task<AddItemSaleResult?> Handle(AddItemSaleCommand command, CancellationToken cancellationToken)
         {
-            var validator = new AddItemSaleCommandValidator();
+            if (!ValidCommand(command)) return null;
 
-            var validationResult = validator.Validate(command);
+            var (validationSuccess, sale, product) = await ValidateSaleAndProductExistenceAsync(command);
 
-            var  (sale, product) = await ValidateSaleAndProductExistenceAsync(command);
+            if (!validationSuccess) return null;
 
-            var existsSaleItem = sale.ExistsSaleItem(product.Id);
+           var existsMessageError =  sale.AddSaleItem(product.Id, product.Price, command.QuantityProduct);
 
-            if (existsSaleItem == null)
+            if (!string.IsNullOrEmpty(existsMessageError))
             {
-                var createdSaleItem = CreateSaleItem(sale, product, command.QuantityProduct);
-                sale.AddSaleItem(createdSaleItem);
-
-            } else
-            {
-                
-
+                _domainValidationContext.AddValidationError("Add Item Sale", existsMessageError);
+                return null;
             }
 
-            return null;
+            var result = _mapper.Map<AddItemSaleResult>(sale);
 
+            await _saleRepository.UpdateAsync(sale);
 
+            return result;
         }
 
-        private async Task<(Sale,Product)> ValidateSaleAndProductExistenceAsync(AddItemSaleCommand command)
+        private async Task<(bool sucess, Sale,Product)> ValidateSaleAndProductExistenceAsync(AddItemSaleCommand command)
         {
-            var existsSale = await _saleRepository.GetWithSaleItemByIdAsync(command.SaleId);
+            var existsSale = await _saleRepository.GetWithSaleItemsByIdAsync(command.SaleId);
 
             if (existsSale == null)
-                throw new DomainException("The Sale was not found");
+            {
+                _domainValidationContext.AddValidationError("Add Item Sale", "he Sale was not found");
+                return (false, null, null);
+            }
 
             var existsProduct = await _productRepository.GetByIdAsync(command.ProductId);
 
             if (existsProduct == null)
-                throw new DomainException("The Product was not found");
-
-            return (existsSale, existsProduct);
-        }
-
-        private SaleItem CreateSaleItem(Sale sale,Product product, int quantity)
-        {
-            return new SaleItem
             {
-                SaleId = sale.Id,
-                ProductId = product.Id,
-                Quantity = quantity,
-                UnitPrice = product.Price
-            };
+                _domainValidationContext.AddValidationError("Add Item Sale", "The Product was not found");
+                return (false, null, null);
+            }
+
+            return (true, existsSale, existsProduct);
         }
+
     }
 }

@@ -24,7 +24,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             {
                 await HandleValidationExceptionAsync(context, ex);
             }
-            catch(DomainException ex)
+            catch(Exception ex)
             {
                 await HandleValidationExceptionAsync(context, ex);
             }
@@ -51,7 +51,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             return context.Response.WriteAsync(JsonSerializer.Serialize(response, jsonOptions));
         }
 
-        private static Task HandleValidationExceptionAsync(HttpContext context, DomainException exception)
+        private static Task HandleValidationExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -59,9 +59,9 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             var response = new ApiResponse
             {
                 Success = false,
-                Message = "Domain Exception",
+                Message = "Exception",
                 Errors = new List<ValidationErrorDetail>() 
-                { new ValidationErrorDetail { Error = "Domain Exception", Detail = exception.Message } }
+                { new ValidationErrorDetail { Error = "Exception", Detail = exception.Message } }
             };
 
             var jsonOptions = new JsonSerializerOptions

@@ -19,7 +19,7 @@ public class BaseController : ControllerBase
 
     protected bool OperationValid()
     {
-       return !_domainValidationContext.ExistNofications;
+       return !_domainValidationContext.ExistErros;
     }
 
     protected ActionResult ErrorResponse()
@@ -28,8 +28,7 @@ public class BaseController : ControllerBase
         {
             Success = false,
             Message = "Domain Validation Error",
-            Errors = _domainValidationContext.DomainValidation
-            .Errors.Select(error => (ValidationErrorDetail)error)
+            Errors = _domainValidationContext.Erros
         };
 
         return StatusCode(StatusCodes.Status400BadRequest, response);

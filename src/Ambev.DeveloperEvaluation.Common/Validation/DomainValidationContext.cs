@@ -4,23 +4,23 @@ namespace Ambev.DeveloperEvaluation.Common.Validation
 {
     public class DomainValidationContext
     {
-        public readonly ValidationResult DomainValidation;
+        public readonly List<ValidationErrorDetail> Erros;
 
         public DomainValidationContext()
         {
-            DomainValidation = new ValidationResult(); ;
+            Erros = new List<ValidationErrorDetail>();
         }
 
-        public bool ExistNofications => DomainValidation.IsValid;
+        public bool ExistErros => Erros.Any();
 
-        public void AddValidationError(string key, string message)
+        public void AddValidationError(string error, string detail)
         {
-            DomainValidation.Errors.Add(new ValidationFailure(key, message));
+            Erros.Add(new ValidationErrorDetail { Error = error, Detail = detail});
         }
 
         public void AddValidationErrors(List<ValidationFailure> validations)
         {
-            DomainValidation.Errors.AddRange(validations);
+            Erros.AddRange(validations.Select(v => (ValidationErrorDetail)v));
         }
 
     }

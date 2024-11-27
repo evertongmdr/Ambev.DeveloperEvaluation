@@ -16,9 +16,10 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
             return await _context.Set<Sale>().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 
-        public async Task<Sale?> GetWithSaleItemByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Sale?> GetWithSaleItemsByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.Set<Sale>().Include(s => s.SaleItems).FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+            return await _context.Set<Sale>().Include(s => s.SaleItems)
+                .ThenInclude(si => si.Product).FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
     }
 }
