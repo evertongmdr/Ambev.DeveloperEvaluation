@@ -48,5 +48,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             Quantity = units;
         }
+
+
     }
 }

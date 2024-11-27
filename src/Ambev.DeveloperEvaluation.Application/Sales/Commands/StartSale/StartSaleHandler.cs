@@ -1,30 +1,31 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
+﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 using static Ambev.DeveloperEvaluation.Domain.Entities.Sale;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
 {
-    public class StartSaleHandler : IRequestHandler<StartSaleCommand, StartSaleResult>
+    public class StartSaleHandler : CommandHandler, IRequestHandler<StartSaleCommand, StartSaleResult?>
     {
 
         private readonly ISaleRepository _saleRepository;
         private readonly IMapper _mapper;
 
-        public StartSaleHandler(ISaleRepository saleRepository, IMapper mapper)
+        public StartSaleHandler(DomainValidationContext domainValidationContext, ISaleRepository saleRepository,
+            IMapper mapper) : base(domainValidationContext)
         {
-            _saleRepository = saleRepository;
-            _mapper = mapper;
+            {
+                _saleRepository = saleRepository;
+                _mapper = mapper;
+            }
         }
 
-        public async Task<StartSaleResult> Handle(StartSaleCommand command, CancellationToken cancellationToken)
+        public async Task<StartSaleResult?> Handle(StartSaleCommand command, CancellationToken cancellationToken)
         {
-            var validator = new StartSaleCommandValidator();
-            var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
-            if (!validationResult.IsValid)
-                throw new ValidationException(validationResult.Errors);
+            if (!ValidCommand(command)) return null;
 
             var sale = SaleFactory.Initiate(command.ClientId, command.CompanyId);
 
@@ -35,5 +36,6 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
             // chamar o event de criação
             return result;
         }
+
     }
 }

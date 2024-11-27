@@ -1,14 +1,26 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using MediatR;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
     public class Sale : BaseEntity
     {
+
+
+         const int MaxQuantityItems = 20;
         /// <summary>
-        /// Indicates the maximum quantity of identical items allowed in the sale.
+        /// Indicates the manimum quantity of identical items allowed in the sale.
         /// </summary>
-        const int MaxQuantityIdenticalItems = 20;
+         const int MinQuantityIdenticalItemsDicount10Porcent = 5;
+
+         const int MaxQuantityIdenticalItemsDicount10Porcent = 9;
+
+         const int MinQuantityIdenticalItemsDicount20Porcent = 10;
+
+         const int MaxQuantityIdenticalItemsDicount20Porcent = 20;
+
 
         /// <summary>
         /// Gets the identifier of client associated with the sale
@@ -80,30 +92,108 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             Status = SaleStatus.Fineshed;
         }
 
-        public SaleItem? ExistsSaleItem(Guid productId)
+        private bool ExistsSaleItem(Guid productId)
+        {
+            return SaleItems.Any(si => si.ProductId == productId);
+        }
+
+        private SaleItem GetSaleItemById(Guid productId)
         {
             return SaleItems.FirstOrDefault(si => si.ProductId == productId);
         }
 
-        public void AddSaleItem(SaleItem saleItem)
+        public string AddSaleItem(Guid productId, decimal price, int units)
         {
-            _saleItems.Add(saleItem);
-            CalculateOrderValue();
+
+            if (ExistsSaleItem(productId))
+            {
+                var existingSaleItem = GetSaleItemById(productId);
+                existingSaleItem.AddUnits(units);
+
+            } else
+            {
+                var newSaleItem = CreateSaleItem(productId, price, units);
+                _saleItems.Add(newSaleItem);
+            }
+
+            var existsMessageError = ValidateSaleRestrictions();
+
+            if (!string.IsNullOrEmpty(existsMessageError))
+                return existsMessageError;
+
+            CalculateSaleValue();
+
+            return string.Empty;
 
         }
 
-        public void CalculateOrderValue()
+        private SaleItem CreateSaleItem(Guid productId, decimal price, int units)
+        {
+            return new SaleItem
+            {
+                SaleId = Id,
+                ProductId = productId,
+                Quantity = units,
+                UnitPrice = price
+            };
+        }
+
+        private void CalculateSaleValue()
         {
             Totalvalue = SaleItems.Sum(p => p.CalculateValue());
 
             CalculateTotalDiscountValue();
         }
 
-
-        public void CalculateTotalDiscountValue()
+        private void CalculateTotalDiscountValue()
         {
 
+            decimal discountRate = GetDiscountRateValue();
+
+            var discount = Totalvalue * discountRate;
+
+            Discountvalue = discount;
+
+            Totalvalue -= discount;
         }
+
+        private decimal GetDiscountRateValue()
+        {
+            decimal discount = 0;
+
+            var saleItemsWithHighestIdenticalMinimum = SaleItems.Where(x =>
+                x.Quantity > MinQuantityIdenticalItemsDicount10Porcent).ToList();
+
+            if (!saleItemsWithHighestIdenticalMinimum.Any())
+                return 0;
+
+            var existsSaleItemsIntervalBetweenDicount20Porcent = saleItemsWithHighestIdenticalMinimum
+                 .Where(x => x.Quantity >= MinQuantityIdenticalItemsDicount20Porcent &&
+                 x.Quantity <= MaxQuantityIdenticalItemsDicount20Porcent).ToList();
+
+
+            if (existsSaleItemsIntervalBetweenDicount20Porcent.Any())
+                return 0.20M;
+
+
+            return 0.10M;
+        }
+
+        private string ValidateSaleRestrictions()
+        {
+
+            var saleItemsWithMaxAllowedQuantity = SaleItems.Where(x =>
+                x.Quantity > MaxQuantityItems).ToList();
+
+            if (saleItemsWithMaxAllowedQuantity.Any())
+                return $"It is not possible to sell more than {MaxQuantityItems} identical products";
+
+            return string.Empty;
+        }
+
+
+
+
 
         public static class SaleFactory
         {
