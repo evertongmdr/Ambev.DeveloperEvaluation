@@ -195,6 +195,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             {
                 var sale = new Sale 
                 { 
+                    Id = Guid.NewGuid(),
                     ClientId = clientId, 
                     CompanyId = companyId, 
                    

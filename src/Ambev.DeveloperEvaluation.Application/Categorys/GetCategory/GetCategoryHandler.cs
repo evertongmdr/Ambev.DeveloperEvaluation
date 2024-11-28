@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;

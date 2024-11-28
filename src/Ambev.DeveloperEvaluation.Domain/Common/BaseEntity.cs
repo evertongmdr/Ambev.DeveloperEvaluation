@@ -1,10 +1,14 @@
-﻿using Ambev.DeveloperEvaluation.Common.Validation;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
+using Ambev.DeveloperEvaluation.Common.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Common;
 
 public class BaseEntity : IComparable<BaseEntity>
 {
     public Guid Id { get; set; }
+
+    private List<Event> _notifications;
+    public IReadOnlyCollection<Event> Notifications => _notifications?.AsReadOnly();
 
     public Task<IEnumerable<ValidationErrorDetail>> ValidateAsync()
     {
@@ -19,5 +23,16 @@ public class BaseEntity : IComparable<BaseEntity>
         }
 
         return other!.Id.CompareTo(Id);
+    }
+
+    public void AddEvent(Event evento)
+    {
+        _notifications = _notifications ?? new List<Event>();
+        _notifications.Add(evento);
+    }
+
+    public void ClearEvents()
+    {
+        _notifications?.Clear();
     }
 }

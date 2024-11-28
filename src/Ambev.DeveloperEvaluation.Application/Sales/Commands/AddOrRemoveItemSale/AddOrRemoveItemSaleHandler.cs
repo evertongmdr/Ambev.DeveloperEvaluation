@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Application.Sales.Events;
+using Ambev.DeveloperEvaluation.Common.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
@@ -38,6 +39,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
             }
 
              _saleRepository.Update(sale);
+            sale.AddEvent(new SaleModifiedEvent(sale.Id));
 
             if (!await PersistData(_saleRepository.UnitOfWork))
                 return null;
@@ -52,7 +54,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (existsSale == null)
             {
-                AddErro("Item Sale Error", "He ale was not found");
+                AddErro("Item Sale Error", "The sale was not found");
                 return (false, null, null);
             }
 

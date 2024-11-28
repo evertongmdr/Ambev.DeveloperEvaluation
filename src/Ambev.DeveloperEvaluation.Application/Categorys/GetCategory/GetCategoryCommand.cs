@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
 {

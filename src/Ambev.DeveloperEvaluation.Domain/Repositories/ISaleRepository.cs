@@ -5,6 +5,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
 {
     public interface ISaleRepository : IRepository<Sale>
     {
+        public Task<Sale?> GetByIdAsync(Guid id);
         public Task<Sale?> GetWithSaleItemsByIdAsync(Guid id);
     }
 }

@@ -2,15 +2,12 @@
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Events
 {
-    public class SaleCreatedEvent : Event
+    public class SaleModifiedEvent : Event
     {
         public Guid SaleId { get; set; }
-
-        public SaleCreatedEvent(Guid saleId)
+        public SaleModifiedEvent(Guid saleId)
         {
             SaleId = saleId;
         }
     }
-
-    
 }

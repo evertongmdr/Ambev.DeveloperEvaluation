@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
@@ -37,8 +37,10 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
             }
 
             var category = _mapper.Map<Category>(command);
+            
+            category.Id = Guid.NewGuid();
 
-             _categoryRepository.Add(category);
+            _categoryRepository.Add(category);
 
 
             if (!await PersistData(_categoryRepository.UnitOfWork))

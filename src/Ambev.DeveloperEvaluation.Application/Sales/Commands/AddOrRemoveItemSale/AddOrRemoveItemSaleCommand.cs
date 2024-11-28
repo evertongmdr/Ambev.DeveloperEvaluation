@@ -1,5 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
-using MediatR;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 {

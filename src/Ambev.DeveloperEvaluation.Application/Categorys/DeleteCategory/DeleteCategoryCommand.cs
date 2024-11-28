@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.DeleteCategory

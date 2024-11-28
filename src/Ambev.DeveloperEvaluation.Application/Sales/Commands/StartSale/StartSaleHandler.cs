@@ -1,5 +1,7 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages.Commnad;
+﻿using Ambev.DeveloperEvaluation.Application.Sales.Events;
+using Ambev.DeveloperEvaluation.Common.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
@@ -27,14 +29,15 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
 
             if (!ValidCommand(command)) return null;
 
-            var saleInitialized = SaleFactory.Initiate(command.ClientId, command.CompanyId);
+            var newSale = SaleFactory.Initiate(command.ClientId, command.CompanyId);
 
-            _saleRepository.Add(saleInitialized);
-
+            _saleRepository.Add(newSale);
+            newSale.AddEvent(new SaleCreatedEvent(newSale.Id));
+            
             if (!await PersistData(_saleRepository.UnitOfWork))
                 return null;
 
-            var result = _mapper.Map<StartSaleResult>(saleInitialized);
+            var result = _mapper.Map<StartSaleResult>(newSale);
             return result;
         }
 
