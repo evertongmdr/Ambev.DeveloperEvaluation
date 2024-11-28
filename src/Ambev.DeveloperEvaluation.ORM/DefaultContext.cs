@@ -1,15 +1,16 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Data;
+using Ambev.DeveloperEvaluation.Common.Messages;
+using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Repositories;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
 namespace Ambev.DeveloperEvaluation.ORM;
 
 public class DefaultContext : DbContext, IUnitOfWork
 {
+    private readonly IMediator _mediator;
     public DbSet<User> Users { get; set; }
     public DbSet<Company> Companys { get; set; }
     public DbSet<Category> Categorys { get; set; }
@@ -17,12 +18,15 @@ public class DefaultContext : DbContext, IUnitOfWork
     public DbSet<Sale> Sales { get; set; }
     public DbSet<SaleItem> SaleItems { get; set; }
 
-    public DefaultContext(DbContextOptions<DefaultContext> options) : base(options)
+    public DefaultContext(DbContextOptions<DefaultContext> options, IMediator mediator) : base(options)
     {
+        _mediator = mediator;
     }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+       
+        modelBuilder.Ignore<Event>();
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
     }
@@ -30,26 +34,37 @@ public class DefaultContext : DbContext, IUnitOfWork
     public async Task<bool> Commit()
     {
         var sucess = await base.SaveChangesAsync() > 0;
+
+        if (sucess) await _mediator.PublicEvents(this);
+
         return sucess;
     }
 }
-public class YourDbContextFactory : IDesignTimeDbContextFactory<DefaultContext>
+
+public static class MediatorExtension
 {
-    public DefaultContext CreateDbContext(string[] args)
+    public static async Task PublicEvents<T>(this IMediator mediator, T ctx) where T : DbContext
     {
-        IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+        var domainEntities = ctx.ChangeTracker
+            .Entries<BaseEntity>()
+            .Where(x => x.Entity.Notifications != null && x.Entity.Notifications.Any());
 
-        var builder = new DbContextOptionsBuilder<DefaultContext>();
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var domainEvents = domainEntities
+            .SelectMany(x => x.Entity.Notifications)
+            .ToList();
 
-        builder.UseNpgsql(
-               connectionString,
-               b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
-        );
+        domainEntities.ToList()
+            .ForEach(entity => entity.Entity.ClearEvents());
 
-        return new DefaultContext(builder.Options);
+        var tasks = domainEvents
+            .Select(async (domainEvent) => {
+                await mediator.Publish(domainEvent);
+            });
+
+        await Task.WhenAll(tasks);
     }
 }
+
+
+
+

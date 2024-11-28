@@ -11,7 +11,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.ToTable("Companys");
 
             builder.HasKey(c => c.Id);
-            builder.Property(c => c.Id).HasColumnType("uuid").HasDefaultValueSql("gen_random_uuid()");
 
             builder.Property(c => c.Name).IsRequired().HasMaxLength(50);
 

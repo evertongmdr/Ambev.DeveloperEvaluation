@@ -12,6 +12,11 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
 
         }
 
+        public async Task<Sale?> GetByIdAsync(Guid id)
+        {
+            return await _context.Set<Sale>().FirstOrDefaultAsync(s => s.Id == id);
+        }
+
         public async Task<Sale?> GetWithSaleItemsByIdAsync(Guid id)
         {
             return await _context.Set<Sale>().Include(s => s.SaleItems)
