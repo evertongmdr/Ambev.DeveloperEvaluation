@@ -2,10 +2,10 @@
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItemSale
 {
-    public class AddItemSaleRequestValidator: AbstractValidator<AddOrRemoveItemSaleRequest>
+    public class AddOrRemoveItemSaleRequestValidator: AbstractValidator<AddOrRemoveItemSaleRequest>
     {
 
-        public AddItemSaleRequestValidator()
+        public AddOrRemoveItemSaleRequestValidator()
         {
             RuleFor(x => x.SaleId)
                 .NotEmpty()
@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItemSale
                 .WithMessage("Product ID is requerid");
 
             RuleFor(x => x.QuantityProduct)
-                .GreaterThan(0)
+                .NotEqual(0)
                 .WithMessage("The quantity must be greater than 0");
         }
 

@@ -33,14 +33,16 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (!string.IsNullOrEmpty(existsMessageError))
             {
-                _domainValidationContext.AddValidationError("Add Item Sale", existsMessageError);
+                AddErro("Item Sale Error", existsMessageError);
                 return null;
             }
 
+             _saleRepository.Update(sale);
+
+            if (!await PersistData(_saleRepository.UnitOfWork))
+                return null;
+
             var result = _mapper.Map<AddOrRemoveItemSaleResult>(sale);
-
-            await _saleRepository.UpdateAsync(sale);
-
             return result;
         }
 
@@ -50,7 +52,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (existsSale == null)
             {
-                _domainValidationContext.AddValidationError("Add Item Sale", "He ale was not found");
+                AddErro("Item Sale Error", "He ale was not found");
                 return (false, null, null);
             }
 
@@ -58,7 +60,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (existsProduct == null)
             {
-                _domainValidationContext.AddValidationError("Add Item Sale", "The Product was not found");
+                AddErro("Item Sale Error", "The Product was not found");
                 return (false, null, null);
             }
 

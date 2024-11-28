@@ -27,13 +27,14 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale
 
             if (!ValidCommand(command)) return null;
 
-            var sale = SaleFactory.Initiate(command.ClientId, command.CompanyId);
+            var saleInitialized = SaleFactory.Initiate(command.ClientId, command.CompanyId);
 
-            var createdSale = await _saleRepository.CreateAsync(sale);
+            _saleRepository.Add(saleInitialized);
 
-            var result = _mapper.Map<StartSaleResult>(createdSale);
+            if (!await PersistData(_saleRepository.UnitOfWork))
+                return null;
 
-            // chamar o event de criação
+            var result = _mapper.Map<StartSaleResult>(saleInitialized);
             return result;
         }
 

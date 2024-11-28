@@ -30,7 +30,7 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 
             if (existsCategory != null)
             {
-                _domainValidationContext.AddValidationError("Create Category", $"This code {command.Code} is " +
+                AddErro("Create Category Error", $"This code {command.Code} is " +
                     $"already associated with a category.");
 
                 return null;
@@ -38,8 +38,13 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 
             var category = _mapper.Map<Category>(command);
 
-            var createdCategory = await _categoryRepository.CreateAsync(category);
-            var result = _mapper.Map<CreateCategoryResult>(createdCategory);
+             _categoryRepository.Add(category);
+
+
+            if (!await PersistData(_categoryRepository.UnitOfWork))
+                return null;
+
+            var result = _mapper.Map<CreateCategoryResult>(category);
 
             return result;
         }

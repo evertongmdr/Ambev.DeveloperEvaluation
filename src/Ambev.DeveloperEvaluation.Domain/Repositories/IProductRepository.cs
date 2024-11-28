@@ -1,9 +1,10 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.Data;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Domain.Repositories
 {
     public interface IProductRepository : IRepository<Product>
     {
-        Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        public Task<Product?> GetByIdAsync(Guid id);
     }
 }

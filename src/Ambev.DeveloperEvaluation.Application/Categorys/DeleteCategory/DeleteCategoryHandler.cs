@@ -19,15 +19,18 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.DeleteCategory
         {
             if(!ValidCommand(command)) return null;
 
-            var existsCategory = await _categoryRepository.GetByIdAsync(command.Id, cancellationToken);
+            var existsCategory = await _categoryRepository.GetByIdAsync(command.Id);
 
             if (existsCategory == null)
             {
-                _domainValidationContext.AddValidationError("Delete Category", $"Category with ID {command.Id} not found");
+                AddErro("Delete Category", $"Category with ID {command.Id} not found");
                 return null;
             }
 
-             await _categoryRepository.DeleteAsync(existsCategory, cancellationToken);
+             _categoryRepository.Delete(existsCategory);
+
+            if (!await PersistData(_categoryRepository.UnitOfWork))
+                return null;
 
             return new DeleteCategoryResult { Success = true };
         }

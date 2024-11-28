@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        public ProductRepository(DbContext context) : base(context)
+        public ProductRepository(DefaultContext context) : base(context)
         {
         }
 
-        public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
-            return await _context.Set<Product>().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+            return await _context.Products.FirstOrDefaultAsync(s => s.Id == id);
         }
     }
 }

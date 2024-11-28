@@ -24,11 +24,11 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
         {
             if (!ValidCommand(commmand)) return null;
 
-            var category = await _categoryRepository.GetByIdAsync(commmand.Id, cancellationToken);
+            var category = await _categoryRepository.GetByIdAsync(commmand.Id);
 
             if (category == null)
             {
-                _domainValidationContext.AddValidationError("Get Category", $"Category with ID " +
+                AddErro("Get Category Error", $"Category with ID " +
                     $"{commmand.Id} not found");
 
                 return null;

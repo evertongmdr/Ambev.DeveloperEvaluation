@@ -1,4 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.Data;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
@@ -6,7 +8,7 @@ using System.Reflection;
 
 namespace Ambev.DeveloperEvaluation.ORM;
 
-public class DefaultContext : DbContext
+public class DefaultContext : DbContext, IUnitOfWork
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Company> Companys { get; set; }
@@ -23,6 +25,12 @@ public class DefaultContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+    }
+
+    public async Task<bool> Commit()
+    {
+        var sucess = await base.SaveChangesAsync() > 0;
+        return sucess;
     }
 }
 public class YourDbContextFactory : IDesignTimeDbContextFactory<DefaultContext>

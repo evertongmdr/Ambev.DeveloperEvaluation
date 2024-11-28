@@ -19,7 +19,6 @@
     <Folder Include="Companys\" />
     <Folder Include="Products\" />
     <Folder Include="Sales\Commands\FinisheSale\" />
-    <Folder Include="Sales\Commands\CancelSale\" />
   </ItemGroup>
 
 </Project>

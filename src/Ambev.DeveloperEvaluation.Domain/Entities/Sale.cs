@@ -94,6 +94,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             return SaleItems.FirstOrDefault(si => si.ProductId == productId);
         }
 
+
         public string AddOrRemoveSaleItem(Guid productId, decimal price, int units)
         {
             if (ExistsSaleItem(productId))
@@ -158,7 +159,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
 
             var saleItemsWithHighestIdenticalMinimum = SaleItems.Where(x =>
-                x.Quantity > MinQuantityIdenticalItemsDicount10Porcent).ToList();
+                x.Quantity >= MinQuantityIdenticalItemsDicount10Porcent).ToList();
 
             if (!saleItemsWithHighestIdenticalMinimum.Any())
                 return 0;
@@ -186,9 +187,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
             return string.Empty;
         }
-
-
-
 
 
         public static class SaleFactory

@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Common.Validation;
+﻿using Ambev.DeveloperEvaluation.Common.Data;
+using Ambev.DeveloperEvaluation.Common.Validation;
 
 namespace Ambev.DeveloperEvaluation.Common.Messages.Commnad
 {
@@ -10,7 +11,7 @@ namespace Ambev.DeveloperEvaluation.Common.Messages.Commnad
         {
             _domainValidationContext = domainValidationContext;
         }
-        
+
         protected bool ValidCommand<TResult>(Command<TResult> mensagem)
         {
             if (!mensagem.IsValid())
@@ -20,6 +21,22 @@ namespace Ambev.DeveloperEvaluation.Common.Messages.Commnad
 
                 return false;
             }
+            return true;
+        }
+
+        protected void AddErro(string error, string detail)
+        {
+            _domainValidationContext.AddValidationError(error, detail);
+        }
+
+        protected async Task<bool> PersistData(IUnitOfWork uow)
+        {
+            if (!await uow.Commit())
+            {
+                _domainValidationContext.AddValidationError("DataPersistenceError", "There was an error while persisting the data.");
+                return false;
+            }
+
             return true;
         }
     }
