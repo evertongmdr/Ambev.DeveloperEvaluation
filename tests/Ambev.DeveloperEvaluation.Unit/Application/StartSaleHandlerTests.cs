@@ -37,7 +37,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         /// </summary>
 
         [Fact(DisplayName = "Sale data is valid, so return successful output data")]
-        public async Task Handle_ValidRequest_ReturnSucessDatasSaleWithSuccess()
+        public async Task Handle_ValidRequest_ReturnsSucessDatasSaleWithSuccess()
         {
             //Given
             var command = StartSaleHandlerTestData.GenerateValidCommand();
@@ -63,7 +63,7 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         /// </summary>
 
         [Fact(DisplayName = "Sale data is invalid, it should return null and with errors.")]
-        public async Task Handle_InvalidRequest_ReturnNullAndWIthError()
+        public async Task Handle_InvalidRequest_ReturnsNullAndWIthError()
         {
             //Given
             var command = new StartSaleCommand();
