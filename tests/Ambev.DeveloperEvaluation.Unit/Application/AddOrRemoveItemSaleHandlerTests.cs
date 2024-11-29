@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale;
+using Ambev.DeveloperEvaluation.Common.Data;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
@@ -6,6 +7,7 @@ using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using AutoMapper;
 using FluentAssertions;
+using MediatR;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
@@ -96,7 +98,8 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
 
             _saleRepository.Received(0).Update(null);
             Assert.True(_domainValidationContext.ExistErros);
-            Assert.Equal(_domainValidationContext.Erros[0].Detail, "The sale was not found");
+            Assert.Equal("The sale was not found",
+                _domainValidationContext.Erros[0].Detail);
         }
 
         /// <summary>
@@ -130,7 +133,9 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
             addOrRemoveItemSaleResult.Should().BeNull();
             _saleRepository.Received(0).Update(sale);
             Assert.True(_domainValidationContext.ExistErros);
-            Assert.Equal(_domainValidationContext.Erros[0].Detail, $"Sale cannot be modified because it is {sale.Status}");
+
+            Assert.Equal($"Sale cannot be modified because it is {sale.Status}",
+                _domainValidationContext.Erros[0].Detail);
         }
     }
 }

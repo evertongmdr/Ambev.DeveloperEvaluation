@@ -32,7 +32,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.CancelSale
 
             if (!sale.IsSaleActiveForModification())
             {
-                AddErro("Cancel Sale Error", $"Sale cannot be modified because it is {sale.Status}");
+                AddErro("Cancel Sale Error", $"Sale cannot be Cancelled because it is {sale.Status}");
                 return null;
             }
 
