@@ -19,6 +19,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
          const int MaxQuantityIdenticalItemsDicount20Porcent = 20;
 
 
+
         /// <summary>
         /// Gets the identifier of client associated with the sale
         /// </summary>
@@ -87,35 +88,60 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             return SaleItems.FirstOrDefault(si => si.ProductId == productId);
         }
 
-
+        /// <summary>
+        /// Adds or updates a sale item. If the item already exists, updates the quantity; otherwise, adds a new item. 
+        /// Validates sale restrictions and recalculates the sale value. 
+        /// Returns an error message if restrictions are violated, or an empty string if successful.
+        /// </summary>
         public string AddOrRemoveSaleItem(Guid productId, decimal price, int units)
         {
+            var errorMessageMaxQuantityItemsExceeded = $"It is not possible to sell more than {MaxQuantityItems} identical products.";
+
+            if (units == 0)
+                return "It is not possible to add a product item with zero quantity.";
+
             if (ExistsSaleItem(productId))
             {
                 var existingSaleItem = GetSaleItemById(productId);
-                existingSaleItem.AddUnits(units);
 
-                if(!existingSaleItem.HasUnits())
-                    SaleItems.Remove(existingSaleItem);
-                
-            } else
+                if (units > 0)
+                {
+                    if (!CanAddUnits(existingSaleItem, units))
+                        return errorMessageMaxQuantityItemsExceeded;
+
+                    existingSaleItem.AddUnits(units);
+                }
+                else
+                {
+                    existingSaleItem.AddUnits(units);
+
+                    if (!existingSaleItem.HasUnits())
+                        SaleItems.Remove(existingSaleItem);
+                }
+
+            }
+            else
             {
-                if (units <= 0)
+                if (units < 0)
                     return "It is not possible to add a product item with zero or negative quantity.";
+
+                if (units > MaxQuantityItems) return errorMessageMaxQuantityItemsExceeded;
 
                 var newSaleItem = CreateSaleItem(productId, price, units);
                 SaleItems.Add(newSaleItem);
             }
 
-            var existsMessageError = ValidateSaleRestrictions();
-
-            if (!string.IsNullOrEmpty(existsMessageError))
-                return existsMessageError;
-
             CalculateSaleValue();
 
             return string.Empty;
+        }
 
+        private bool CanAddUnits(SaleItem saleItem, int units)
+        {
+            int totalUnits = saleItem.Quantity + units;
+
+            return totalUnits <= MaxQuantityItems;
+                
         }
 
         private SaleItem CreateSaleItem(Guid productId, decimal price, int units)
@@ -167,18 +193,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
 
             return 0.10M;
-        }
-
-        private string ValidateSaleRestrictions()
-        {
-
-            var saleItemsWithMaxAllowedQuantity = SaleItems.Where(x =>
-                x.Quantity > MaxQuantityItems).ToList();
-
-            if (saleItemsWithMaxAllowedQuantity.Any())
-                return $"It is not possible to sell more than {MaxQuantityItems} identical products";
-
-            return string.Empty;
         }
 
         public bool IsSaleActiveForModification()

@@ -29,7 +29,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.FinisheSale
 
             if (!sale.IsSaleActiveForModification())
             {
-                AddErro("Sale Error", $"Sale cannot be modified because it is {sale.Status}");
+                AddErro("Sale Error", $"Sale cannot be Finished because it is {sale.Status}");
                 return null;
             }
 

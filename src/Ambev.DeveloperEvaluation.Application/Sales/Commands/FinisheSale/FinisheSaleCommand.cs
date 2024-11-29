@@ -1,5 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Application.Sales.Commands.CancelSale;
-using Ambev.DeveloperEvaluation.Common.Messages;
+﻿using Ambev.DeveloperEvaluation.Common.Messages;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.FinisheSale
 {
