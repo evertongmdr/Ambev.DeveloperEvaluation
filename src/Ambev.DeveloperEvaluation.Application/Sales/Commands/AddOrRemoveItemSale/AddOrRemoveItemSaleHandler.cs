@@ -58,6 +58,12 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
                 return (false, null, null);
             }
 
+            if (!existsSale.IsSaleActiveForModification()) 
+            {
+                AddErro("Sale Error", $"Sale cannot be modified because it is {existsSale.Status}");
+                return (false, null, null);
+            }
+
             var existsProduct = await _productRepository.GetByIdAsync(command.ProductId);
 
             if (existsProduct == null)
@@ -65,6 +71,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
                 AddErro("Item Sale Error", "The Product was not found");
                 return (false, null, null);
             }
+
 
             return (true, existsSale, existsProduct);
         }

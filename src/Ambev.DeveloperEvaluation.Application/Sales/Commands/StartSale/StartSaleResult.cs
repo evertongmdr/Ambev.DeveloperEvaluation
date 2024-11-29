@@ -5,7 +5,7 @@
         /// <summary>
         /// Gets the unique identifier of the newly created sale.
         /// </summary>
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Gets the sale number 

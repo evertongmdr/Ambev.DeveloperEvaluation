@@ -18,7 +18,6 @@
   <ItemGroup>
     <Folder Include="Companys\" />
     <Folder Include="Products\" />
-    <Folder Include="Sales\Commands\FinisheSale\" />
   </ItemGroup>
 
 </Project>

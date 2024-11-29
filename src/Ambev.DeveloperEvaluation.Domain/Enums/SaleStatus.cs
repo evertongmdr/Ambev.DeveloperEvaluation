@@ -16,6 +16,6 @@ public enum SaleStatus
     /// <summary>
     /// Indicates that sale is with Fineshed Status
     /// </summary>
-    Fineshed = 9
+    Finished = 9
 }
 

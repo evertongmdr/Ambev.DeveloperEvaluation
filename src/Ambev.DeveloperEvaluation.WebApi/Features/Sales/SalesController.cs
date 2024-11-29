@@ -1,10 +1,15 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale;
+using Ambev.DeveloperEvaluation.Application.Sales.Commands.CancelSale;
+using Ambev.DeveloperEvaluation.Application.Sales.Commands.FinisheSale;
 using Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.AddItemSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.FinisheSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.StartSale;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -69,6 +74,56 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
                 Success = true,
                 Message = "Item successfully added or removed.",
                 Data = _mapper.Map<AddOrRemoveItemSaleResponse>(response)
+            });
+        }
+
+
+        [HttpPost("cancel")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Cancel([FromBody] CancelSaleRequest request, CancellationToken cancellationToken)
+        {
+            var validator = new CancelSaleRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<CancelSaleCommand>(request);
+            var response = await _mediator.Send(command, cancellationToken);
+
+            if (!OperationValid())
+                return ErrorResponse();
+
+            return Ok(new ApiResponse
+            {
+                Success = true,
+                Message = "Sale Cancelled successfully"
+            });
+        }
+
+
+        [HttpPost("finishe")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Finishe([FromBody] FinisheSaleRequest request, CancellationToken cancellationToken)
+        {
+            var validator = new FinisheSaleRequestValidator();
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
+                return BadRequest(validationResult.Errors);
+
+            var command = _mapper.Map<FinisheSaleCommand>(request);
+            var response = await _mediator.Send(command, cancellationToken);
+
+            if (!OperationValid())
+                return ErrorResponse();
+
+            return Ok(new ApiResponse
+            {
+                Success = true,
+                Message = "Sale Finished successfully"
             });
         }
     }

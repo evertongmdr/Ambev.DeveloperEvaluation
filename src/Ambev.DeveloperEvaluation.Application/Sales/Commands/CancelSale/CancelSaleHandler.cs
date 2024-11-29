@@ -11,13 +11,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.CancelSale
     public class CancelSaleHandler : CommandHandler, IRequestHandler<CancelSaleCommand, CancelSaleResult?>
     {
         private readonly ISaleRepository _saleRepository;
-        private readonly IMapper _mapper;
-
+    
         public CancelSaleHandler(DomainValidationContext domainValidationContext,
-            ISaleRepository saleRepository, IMapper mapper) : base(domainValidationContext)
+            ISaleRepository saleRepository) : base(domainValidationContext)
         {
             _saleRepository = saleRepository;
-            _mapper = mapper;
         }
 
         public async Task<CancelSaleResult?> Handle(CancelSaleCommand command, CancellationToken cancellationToken)
@@ -29,6 +27,12 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.CancelSale
             if (sale == null)
             {
                 AddErro("Cancel Sale Error", "The sale was not found");
+                return null;
+            }
+
+            if (!sale.IsSaleActiveForModification())
+            {
+                AddErro("Cancel Sale Error", $"Sale cannot be modified because it is {sale.Status}");
                 return null;
             }
 

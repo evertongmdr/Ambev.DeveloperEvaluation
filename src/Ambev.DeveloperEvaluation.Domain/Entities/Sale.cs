@@ -6,7 +6,6 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
     public class Sale : BaseEntity
     {
 
-
          const int MaxQuantityItems = 20;
         /// <summary>
         /// Indicates the manimum quantity of identical items allowed in the sale.
@@ -23,51 +22,45 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Gets the identifier of client associated with the sale
         /// </summary>
-        public Guid ClientId { get; private set; }
+        public Guid ClientId { get; set; }
 
         /// <summary>
         /// Gets the identifier of the company where the sale was made.
         /// </summary>
-        public Guid CompanyId { get; private set; }
+        public Guid CompanyId { get;  set; }
 
         /// <summary>
         /// Gets the sale number 
         /// </summary>
-        public long Number { get; private set; }
+        public long Number { get; set; }
 
         /// <summary>
         /// Gets the sale Status
         /// </summary>
-        public SaleStatus Status { get; private set; }
+        public SaleStatus Status { get; set; }
 
-        public decimal AmountToPay { get; private set; }
-        public decimal TotalAmount { get; private set; }
-        public decimal DiscountAmount { get; private set; }
+        public decimal AmountToPay { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
 
         /// <summary>
         /// Gets the date and time when sale was finished.
         /// </summary>
-        public DateTime? FinalizedAt { get; private set; }
+        public DateTime? FinalizedAt { get; set; }
 
-       
-        private readonly List<SaleItem> _saleItems;
-
-        /// <summary>
-        /// Gets list items associated with the sale.
-        /// </summary
-        public IReadOnlyCollection<SaleItem> SaleItems => _saleItems;
+        public List<SaleItem> SaleItems { get; set; } = [];
 
         /// <summary>
         /// Property mapping of EF Core.<br /> 
         /// Gets information about the client associated with the sale. 
         /// </summary>
-        public User Client { get; private set; }
+        public User Client { get; set; }
 
         /// <summary>
         /// Property mapping of EF Core. <br /> 
         /// Gets information about the Company that made sale.
         /// </summary>
-        public Company Company { get; private set; }
+        public Company Company { get; set; }
 
         public void InitiateSale()
         {
@@ -81,7 +74,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         public void FinisheSale()
         {
-            Status = SaleStatus.Fineshed;
+            Status = SaleStatus.Finished;
         }
 
         private bool ExistsSaleItem(Guid productId)
@@ -103,7 +96,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 existingSaleItem.AddUnits(units);
 
                 if(!existingSaleItem.HasUnits())
-                    _saleItems.Remove(existingSaleItem);
+                    SaleItems.Remove(existingSaleItem);
                 
             } else
             {
@@ -111,7 +104,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                     return "It is not possible to add a product item with zero or negative quantity.";
 
                 var newSaleItem = CreateSaleItem(productId, price, units);
-                _saleItems.Add(newSaleItem);
+                SaleItems.Add(newSaleItem);
             }
 
             var existsMessageError = ValidateSaleRestrictions();
@@ -188,6 +181,16 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             return string.Empty;
         }
 
+        public bool IsSaleActiveForModification()
+        {
+            var nonModifiableStatuses = new List<SaleStatus>
+            {
+                SaleStatus.Cancelled,
+                SaleStatus.Finished
+            };
+
+            return !nonModifiableStatuses.Contains(Status);
+        }
 
         public static class SaleFactory
         {
