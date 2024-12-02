@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages;
+﻿using Ambev.DeveloperEvaluation.Common.Domain.Messages;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.FinisheSale
 {

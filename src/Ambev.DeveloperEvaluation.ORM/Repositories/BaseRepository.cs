@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Data;
+﻿using Ambev.DeveloperEvaluation.Common.Infrastructure;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {

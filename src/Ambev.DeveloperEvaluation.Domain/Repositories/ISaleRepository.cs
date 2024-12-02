@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Data;
+﻿using Ambev.DeveloperEvaluation.Common.Infrastructure;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Domain.Repositories

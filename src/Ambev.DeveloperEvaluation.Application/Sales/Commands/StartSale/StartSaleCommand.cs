@@ -1,5 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
-using Ambev.DeveloperEvaluation.Common.Messages;
+using Ambev.DeveloperEvaluation.Common.Domain.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using MediatR;
 

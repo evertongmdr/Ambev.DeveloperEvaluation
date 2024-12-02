@@ -1,6 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Categorys.DeleteCategory;
 using Ambev.DeveloperEvaluation.Application.Sales.Events;
-using Ambev.DeveloperEvaluation.Common.Messages;
+using Ambev.DeveloperEvaluation.Common.Domain.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;

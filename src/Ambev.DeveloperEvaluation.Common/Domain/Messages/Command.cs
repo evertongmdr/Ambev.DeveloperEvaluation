@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Common.Messages
+namespace Ambev.DeveloperEvaluation.Common.Domain.Messages
 {
     public class Command<TResult> : IRequest<TResult>
     {

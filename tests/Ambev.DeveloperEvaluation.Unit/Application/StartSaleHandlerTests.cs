@@ -1,5 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.Commands.StartSale;
-using Ambev.DeveloperEvaluation.Common.Data;
+using Ambev.DeveloperEvaluation.Common.Infrastructure;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
@@ -15,7 +15,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
     public class StartSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly StartSaleHandler _handler;
@@ -25,7 +24,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Application
         {
             _domainValidationContext = new DomainValidationContext();
             _saleRepository = Substitute.For<ISaleRepository>();
-            _unitOfWork = Substitute.For<IUnitOfWork>();
             _mapper = Substitute.For<IMapper>();
             _mediator = Substitute.For<IMediator>();
             _handler = new StartSaleHandler(_domainValidationContext, _saleRepository, _mapper);

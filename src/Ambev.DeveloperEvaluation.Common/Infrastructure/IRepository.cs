@@ -1,4 +1,4 @@
-﻿namespace Ambev.DeveloperEvaluation.Common.Data
+﻿namespace Ambev.DeveloperEvaluation.Common.Infrastructure
 {
     public interface IRepository<TEntity> : IDisposable
     {

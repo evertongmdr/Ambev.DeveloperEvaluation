@@ -1,8 +1,7 @@
-﻿using Ambev.DeveloperEvaluation.Common.Validation;
+﻿using Ambev.DeveloperEvaluation.Common.Utils;
+using Ambev.DeveloperEvaluation.Common.Validation;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Common;
 

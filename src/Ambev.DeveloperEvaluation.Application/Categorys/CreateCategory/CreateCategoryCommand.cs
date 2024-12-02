@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages;
+﻿using Ambev.DeveloperEvaluation.Common.Domain.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory

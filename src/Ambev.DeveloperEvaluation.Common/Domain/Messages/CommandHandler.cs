@@ -1,7 +1,7 @@
-﻿using Ambev.DeveloperEvaluation.Common.Data;
+﻿using Ambev.DeveloperEvaluation.Common.Infrastructure;
 using Ambev.DeveloperEvaluation.Common.Validation;
 
-namespace Ambev.DeveloperEvaluation.Common.Messages
+namespace Ambev.DeveloperEvaluation.Common.Domain.Messages
 {
     public abstract class CommandHandler
     {

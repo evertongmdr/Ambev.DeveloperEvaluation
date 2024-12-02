@@ -1,10 +1,9 @@
-﻿using Ambev.DeveloperEvaluation.Common.Messages;
+﻿using Ambev.DeveloperEvaluation.Common.Domain.Messages;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
-using System.Net;
 
 namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 {

@@ -1,5 +1,4 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale;
-using Ambev.DeveloperEvaluation.Common.Data;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
@@ -7,7 +6,6 @@ using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Unit.Application.TestData;
 using AutoMapper;
 using FluentAssertions;
-using MediatR;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Xunit;
