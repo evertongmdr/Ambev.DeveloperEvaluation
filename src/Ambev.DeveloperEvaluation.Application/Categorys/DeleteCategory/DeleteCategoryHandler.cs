@@ -23,7 +23,7 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.DeleteCategory
 
             if (existsCategory == null)
             {
-                AddErro("Delete Category", $"Category with ID {command.Id} not found");
+                AddError("Delete Category", $"Category with ID {command.Id} not found");
                 return null;
             }
 

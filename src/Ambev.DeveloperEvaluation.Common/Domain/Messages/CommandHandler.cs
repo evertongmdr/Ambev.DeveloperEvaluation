@@ -24,7 +24,7 @@ namespace Ambev.DeveloperEvaluation.Common.Domain.Messages
             return true;
         }
 
-        protected void AddErro(string error, string detail)
+        protected void AddError(string error, string detail)
         {
             _domainValidationContext.AddValidationError(error, detail);
         }

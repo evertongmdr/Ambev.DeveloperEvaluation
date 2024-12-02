@@ -29,7 +29,7 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.CreateCategory
 
             if (existsCategory != null)
             {
-                AddErro("Create Category Error", $"This code {command.Code} is " +
+                AddError("Create Category Error", $"This code {command.Code} is " +
                     $"already associated with a category.");
 
                 return null;

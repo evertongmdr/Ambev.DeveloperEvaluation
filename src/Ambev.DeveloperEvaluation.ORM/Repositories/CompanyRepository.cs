@@ -1,5 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories
 {
@@ -7,6 +8,11 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
     {
         public CompanyRepository(DefaultContext context) : base(context)
         {
+        }
+
+        public async Task<Company?> GetByIdAsync(Guid Id)
+        {
+            return await _context.Companys.FirstOrDefaultAsync(c => c.Id == Id);
         }
     }
 }

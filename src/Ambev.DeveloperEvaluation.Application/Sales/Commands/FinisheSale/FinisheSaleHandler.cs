@@ -23,13 +23,13 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.FinisheSale
 
             if (sale == null)
             {
-                AddErro("Cancel Sale Error", "The sale was not found");
+                AddError("Cancel Sale Error", "The sale was not found");
                 return null;
             }
 
             if (!sale.IsSaleActiveForModification())
             {
-                AddErro("Sale Error", $"Sale cannot be Finished because it is {sale.Status}");
+                AddError("Sale Error", $"Sale cannot be Finished because it is {sale.Status}");
                 return null;
             }
 

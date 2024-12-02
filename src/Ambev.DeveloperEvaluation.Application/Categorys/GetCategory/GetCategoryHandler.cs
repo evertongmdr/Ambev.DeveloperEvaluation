@@ -28,7 +28,7 @@ namespace Ambev.DeveloperEvaluation.Application.Categorys.GetCategory
 
             if (category == null)
             {
-                AddErro("Get Category Error", $"Category with ID " +
+                AddError("Get Category Error", $"Category with ID " +
                     $"{commmand.Id} not found");
 
                 return null;

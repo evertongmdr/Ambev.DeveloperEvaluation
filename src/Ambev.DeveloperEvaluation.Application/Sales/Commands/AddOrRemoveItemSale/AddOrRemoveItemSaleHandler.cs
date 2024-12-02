@@ -34,7 +34,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (!string.IsNullOrEmpty(existsMessageError))
             {
-                AddErro("Item Sale Error", existsMessageError);
+                AddError("Item Sale Error", existsMessageError);
                 return null;
             }
 
@@ -54,13 +54,13 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (existsSale == null)
             {
-                AddErro("Item Sale Error", "The sale was not found");
+                AddError("Item Sale Error", "The sale was not found");
                 return (false, null, null);
             }
 
             if (!existsSale.IsSaleActiveForModification()) 
             {
-                AddErro("Sale Error", $"Sale cannot be modified because it is {existsSale.Status}");
+                AddError("Sale Error", $"Sale cannot be modified because it is {existsSale.Status}");
                 return (false, null, null);
             }
 
@@ -68,7 +68,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.Commands.AddItemSale
 
             if (existsProduct == null)
             {
-                AddErro("Item Sale Error", "The Product was not found");
+                AddError("Item Sale Error", "The Product was not found");
                 return (false, null, null);
             }
 
