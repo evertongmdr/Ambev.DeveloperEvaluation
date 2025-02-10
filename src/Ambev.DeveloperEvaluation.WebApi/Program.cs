@@ -8,6 +8,7 @@ using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Serilog;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
@@ -53,13 +54,22 @@ public class Program
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             var app = builder.Build();
-            app.UseMiddleware<ValidationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
             }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<DefaultContext>();
+                dbContext.Database.Migrate(); // Aplica todas as migrations pendentes
+            }
+
+            app.UseMiddleware<ValidationExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
@@ -72,10 +82,16 @@ public class Program
 
             app.Run();
         }
+        catch (PostgresException ex)
+        {
+            Log.Fatal(ex, "Houve algum erro ao se conectar com o banco de dados");
+            throw ex;
+        }
         catch (Exception ex)
         {
             Log.Fatal(ex, "Application terminated unexpectedly");
         }
+
         finally
         {
             Log.CloseAndFlush();
