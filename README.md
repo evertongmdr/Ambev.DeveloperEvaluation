@@ -116,25 +116,13 @@ Escolhi a **entidade `Sale`** como o **AggregateRoot** . Ela centraliza as opera
 
 ### Alternativas à Implementação de `Sale` como AggregateRoot
 
-Embora tenha seguido o padrão de **AggregateRoot** para a entidade **Sale**, há outras maneiras de organizar a lógica de negócios:
+Embora tenha seguido o padrão de **AggregateRoot** para a entidade **Sale**, há outras maneira(s) de organizar a lógica de negócios:
 
 1. **Separar Lógica de Cálculos em um Serviço**
    - **Alternativa**: Em vez de centralizar a lógica de cálculo de preços, descontos e regras de negócio dentro da entidade **Sale**, poderíamos ter criado um **serviço de domínio** para essas operações.
    - **Exemplo**: Um serviço que aceita uma venda e seus itens, e então aplica todas as regras de negócio necessárias.
    - **Vantagens**: Maior flexibilidade para manipular o cálculo de preços e descontos em uma camada separada. A entidade **Sale** seria mais simples e focada apenas nos dados.
    - **Desvantagens**: A lógica de negócios ficaria espalhada entre a entidade e o serviço, o que poderia dificultar a manutenção e garantir a consistência de regras complexas.
-
-2. **Usar um Padrão de Serviço para a Venda**
-   - **Alternativa**: Outra abordagem seria utilizar um **padrão de serviço** para gerenciar o ciclo de vida da venda, controlando a criação, adição de itens e cancelamento por meio de um serviço centralizado.
-   - **Exemplo**: Criar um serviço `SaleService` que gerencia todos os aspectos da venda, como a criação da venda e as operações sobre os itens.
-   - **Vantagens**: A lógica de negócios seria isolada em um serviço, facilitando a testabilidade e a manutenção.
-   - **Desvantagens**: A entidade **Sale** perderia o papel de **AggregateRoot**, o que poderia diminuir a clareza e a coesão do modelo de domínio, fazendo com que a operação da venda fosse menos intuitiva e distribuída.
-  
-3. **Entidade de Venda com Repositórios Externos**
-   - **Alternativa**: Outra opção seria manter a entidade **Sale** com uma lógica mais simples, delegando parte da validação e cálculos para repositórios ou handlers externos, ao invés de aplicar toda a lógica dentro da própria entidade.
-   - **Exemplo**: Usar um repositório de vendas que se encarregaria de todas as operações, mantendo a **entidade Sale** mais focada em representar dados simples.
-   - **Vantagens**: A entidade **Sale** ficaria mais enxuta, com menos responsabilidades.
-   - **Desvantagens**: Poderia quebrar o princípio de **coesão** e tornar o modelo de domínio menos claro. A lógica de negócios dispersa pode criar dificuldades para manter a consistência dos dados.
 
 ### Justificativa para Usar `Sale` como AggregateRoot
 
